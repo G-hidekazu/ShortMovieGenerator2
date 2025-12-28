@@ -4,8 +4,12 @@ from __future__ import annotations
 from flask import Flask, Response, render_template, request
 from jinja2 import TemplateNotFound
 
-from .summary import format_timestamp
-from .transcript import TranscriptFetcher, TranscriptLine, video_id_from_url
+from short_movie_generator.summary import format_timestamp
+from short_movie_generator.transcript import (
+    TranscriptFetcher,
+    TranscriptLine,
+    video_id_from_url,
+)
 
 
 def create_app() -> Flask:
@@ -17,6 +21,7 @@ def create_app() -> Flask:
         error: str | None = None,
         transcript: list[TranscriptLine] | None = None,
         video_url: str = "",
+        video_id: str | None = None,
         languages_input: str = "ja en",
         status: int = 200,
     ) -> Response:
@@ -27,6 +32,7 @@ def create_app() -> Flask:
                     transcript=transcript,
                     error=error,
                     video_url=video_url,
+                    video_id=video_id,
                     languages_input=languages_input,
                 ),
                 status=status,
@@ -60,6 +66,7 @@ def create_app() -> Flask:
         video_url = request.form.get("video_url", "") if request.method == "POST" else ""
         languages_input = request.form.get("languages", "ja en") if request.method == "POST" else "ja en"
         languages = [lang.strip() for lang in languages_input.split() if lang.strip()] or ["ja", "en"]
+        video_id: str | None = None
 
         if request.method == "POST":
             try:
@@ -76,6 +83,7 @@ def create_app() -> Flask:
             transcript=transcript,
             error=error,
             video_url=video_url,
+            video_id=video_id,
             languages_input=" ".join(languages),
         )
 
