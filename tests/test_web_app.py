@@ -29,6 +29,7 @@ def test_web_app_displays_transcript(monkeypatch):
     body = response.get_data(as_text=True)
     assert "Hello" in body and "World" in body
     assert "00:00" in body and "00:05" in body
+    assert "href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=5s\"" in body
 
 
 def test_web_app_handles_unexpected_errors(monkeypatch):
