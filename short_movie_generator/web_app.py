@@ -27,6 +27,8 @@ def create_app() -> Flask:
                 results = extractor.extract()
             except ValueError as exc:
                 error = str(exc) or "動画の処理中にエラーが発生しました。"
+            except Exception:
+                error = "予期しないエラーが発生しました。時間をおいて再試行してください。"
 
         return render_template(
             "index.html",

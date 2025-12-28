@@ -59,6 +59,10 @@ class TranscriptFetcher:
                 "対応する言語の字幕が存在しません。"
             )
             raise ValueError(message) from exc
+        except Exception as exc:
+            raise ValueError(
+                "字幕の取得中に予期しないエラーが発生しました。時間をおいて再度お試しください。"
+            ) from exc
 
         return [TranscriptLine(text=item["text"].strip(), start=item["start"]) for item in transcript]
 
