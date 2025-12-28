@@ -1,1 +1,1 @@
-"""YouTube quote extraction utilities."""
+"""YouTube transcript viewer utilities."""

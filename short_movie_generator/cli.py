@@ -1,4 +1,4 @@
-"""Command-line interface for extracting key quotes from a YouTube video."""
+"""Command-line interface for fetching full YouTube transcripts."""
 
 from __future__ import annotations
 
@@ -6,13 +6,13 @@ import argparse
 import sys
 from typing import List
 
-from .summary import KeyLineExtractor
+from .summary import format_timestamp
 from .transcript import TranscriptFetcher, video_id_from_url
 
 
 def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="YouTube動画から重要な3つのセリフと解説を抽出します。"
+        description="YouTube動画の字幕全文を取得して表示します。"
     )
     parser.add_argument("url", help="YouTubeの動画URLまたは動画ID")
     parser.add_argument(
@@ -40,17 +40,13 @@ def main(argv: List[str] | None = None) -> int:
         print(exc, file=sys.stderr)
         return 1
 
-    extractor = KeyLineExtractor(transcript)
-    key_lines = extractor.extract()
-
-    if not key_lines:
-        print("字幕が空のため、セリフを抽出できませんでした。", file=sys.stderr)
+    if not transcript:
+        print("字幕が空のため、表示できる内容がありません。", file=sys.stderr)
         return 1
 
-    print("=== 重要なセリフと解説 ===")
-    for idx, key_line in enumerate(key_lines, start=1):
-        print(f"{idx}. {key_line.line.text}")
-        print(f"   -> {key_line.explanation}")
+    print("=== 字幕全文 ===")
+    for line in transcript:
+        print(f"{format_timestamp(line.start)} {line.text}")
 
     return 0
 
