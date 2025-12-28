@@ -49,6 +49,13 @@ class TranscriptFetcher:
                 "pip install -r requirements.txt を実行して依存関係を用意してください。"
             ) from exc
 
+        if not hasattr(YouTubeTranscriptApi, "get_transcript"):
+            raise ValueError(
+                "字幕取得ライブラリのバージョンが古い可能性があります。"
+                " pip install --upgrade youtube-transcript-api で最新化した上で、"
+                "再度お試しください。"
+            )
+
         try:
             transcript = YouTubeTranscriptApi.get_transcript(
                 video_id, languages=self.language_preference
