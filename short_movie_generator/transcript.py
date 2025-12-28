@@ -49,6 +49,24 @@ class TranscriptFetcher:
                 "pip install -r requirements.txt を実行して依存関係を用意してください。"
             ) from exc
 
+        # Some environments have youtube-transcript-api installed but older
+        # than the required version, which lacks critical methods. Detect that
+        # situation early and guide the user to upgrade.
+        try:
+            from importlib import metadata as importlib_metadata
+
+            version_str = importlib_metadata.version("youtube-transcript-api")
+        except Exception:  # pragma: no cover - defensive fallback
+            version_str = None
+
+        if version_str and _version_is_older_than(version_str, "0.6.2"):
+            raise ValueError(
+                "字幕取得ライブラリのバージョンが古い可能性があります。"
+                " pip install --upgrade youtube-transcript-api を実行して "
+                "0.6.2 以上に更新してから再度お試しください。"
+                f" (現在のバージョン: {version_str})"
+            )
+
         if not hasattr(YouTubeTranscriptApi, "get_transcript"):
             raise ValueError(
                 "字幕取得ライブラリのバージョンが古い可能性があります。"
@@ -103,3 +121,30 @@ def video_id_from_url(url: str) -> str:
             return match.group(1)
 
     raise ValueError("有効なYouTubeのURLまたは動画IDを指定してください。")
+
+
+def _version_is_older_than(actual: str, minimum: str) -> bool:
+    """Return True when ``actual`` is lower than ``minimum``.
+
+    Versions are compared component-wise as integer tuples. Missing components
+    are treated as zeros, e.g. ``0.6`` is treated as ``0.6.0``.
+    """
+
+    def to_tuple(value: str) -> tuple[int, ...]:
+        parts = []
+        for part in value.split("."):
+            if part.isdigit():
+                parts.append(int(part))
+            else:
+                break
+        return tuple(parts)
+
+    actual_parts = to_tuple(actual)
+    minimum_parts = to_tuple(minimum)
+
+    # Pad to equal length for comparison
+    max_len = max(len(actual_parts), len(minimum_parts))
+    actual_padded = actual_parts + (0,) * (max_len - len(actual_parts))
+    minimum_padded = minimum_parts + (0,) * (max_len - len(minimum_parts))
+
+    return actual_padded < minimum_padded

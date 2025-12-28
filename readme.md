@@ -4,7 +4,7 @@ YouTube動画のURL（または動画ID）を渡すと、字幕を取得して�
 
 ## セットアップ
 
-依存ライブラリを最新化してから利用してください。特に `youtube-transcript-api` は最新バージョンへのアップグレードが必要です。
+依存ライブラリを最新化してから利用してください。特に `youtube-transcript-api` は **0.6.2 以上** へのアップグレードが必要です。
 
 ```bash
 pip install --upgrade youtube-transcript-api
