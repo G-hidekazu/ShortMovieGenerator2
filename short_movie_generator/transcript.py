@@ -52,8 +52,8 @@ class TranscriptFetcher:
         if not hasattr(YouTubeTranscriptApi, "get_transcript"):
             raise ValueError(
                 "字幕取得ライブラリのバージョンが古い可能性があります。"
-                " pip install --upgrade youtube-transcript-api で最新化した上で、"
-                "再度お試しください。"
+                " pip install --upgrade youtube-transcript-api を実行して "
+                "0.6.2 以上に更新してから再度お試しください。"
             )
 
         try:

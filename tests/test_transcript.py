@@ -66,4 +66,4 @@ def test_fetch_warns_on_missing_api_method(monkeypatch):
 
     message = str(excinfo.value)
     assert "バージョン" in message
-    assert "upgrade" in message
+    assert "0.6.2" in message
