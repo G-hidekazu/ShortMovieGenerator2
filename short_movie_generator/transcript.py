@@ -61,7 +61,10 @@ class TranscriptFetcher:
             raise ValueError(message) from exc
         except Exception as exc:
             raise ValueError(
-                "字幕の取得中に予期しないエラーが発生しました。時間をおいて再度お試しください。"
+                "字幕の取得中にエラーが発生しました。動画が非公開/地域・年齢制限付きであるか、"
+                "ネットワークに問題がある可能性があります。公開設定を確認し、字幕の言語を変更するか、"
+                "ネットワーク状態を確認してから再度お試しください。"
+                f" (技術的な詳細: {exc})"
             ) from exc
 
         return [TranscriptLine(text=item["text"].strip(), start=item["start"]) for item in transcript]

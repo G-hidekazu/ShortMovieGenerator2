@@ -33,4 +33,7 @@ def test_fetch_wraps_unexpected_errors(monkeypatch):
     with pytest.raises(ValueError) as excinfo:
         fetcher.fetch("abcdefghijk")
 
-    assert "予期しないエラー" in str(excinfo.value)
+    message = str(excinfo.value)
+    assert "エラーが発生" in message
+    assert "ネットワーク" in message
+    assert "詳細" in message
