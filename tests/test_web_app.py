@@ -3,6 +3,7 @@ import pytest
 pytest.importorskip("flask")
 
 from short_movie_generator.web_app import create_app
+from jinja2 import TemplateNotFound
 
 
 def test_web_app_handles_unexpected_errors(monkeypatch):
@@ -28,3 +29,19 @@ def test_web_app_handles_unexpected_errors(monkeypatch):
     assert response.status_code == 200
     body = response.get_data(as_text=True)
     assert "予期しないエラー" in body
+
+
+def test_web_app_renders_fallback_when_template_missing(monkeypatch):
+    app = create_app()
+    client = app.test_client()
+
+    # Force template rendering to fail to ensure the handler still returns a response.
+    monkeypatch.setattr(
+        "short_movie_generator.web_app.render_template",
+        lambda *args, **kwargs: (_ for _ in ()).throw(TemplateNotFound("index.html")),
+    )
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "ページを表示できませんでした" in response.get_data(as_text=True)
