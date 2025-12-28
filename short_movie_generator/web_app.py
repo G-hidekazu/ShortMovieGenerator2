@@ -4,8 +4,12 @@ from __future__ import annotations
 from flask import Flask, Response, render_template, request
 from jinja2 import TemplateNotFound
 
-from .summary import format_timestamp
-from .transcript import TranscriptFetcher, TranscriptLine, video_id_from_url
+from short_movie_generator.summary import format_timestamp
+from short_movie_generator.transcript import (
+    TranscriptFetcher,
+    TranscriptLine,
+    video_id_from_url,
+)
 
 
 def create_app() -> Flask:
